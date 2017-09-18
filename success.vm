@@ -1,0 +1,166 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<link rel="stylesheet" type="text/css" href="style.css">
+		
+        <title>MyTestPage</title>
+		<meta charset="utf-8">
+        <meta name="decorator" content="atl.admin"/>
+        <meta name="projectKey" content="$project.getKey()"/>
+        <meta name="projectId" content="$project.getId()"/>
+        <meta name="admin.active.tab" content="my_item_link"/>
+        <meta name="admin.active.section" content="atl.jira.proj.config"/>
+        $webResourceManager.requireResourcesForContext("my-resources")
+
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<style>
+			h3 { cursor:pointer;}
+		</style>
+		
+		<script src="https://www.google.com/jsapi"></script>
+		<script>
+			google.load("visualization", "1", {packages:["corechart"]});
+			google.setOnLoadCallback(drawChart);
+			function drawChart() {
+			var data = google.visualization.arrayToDataTable([
+			 ['Задача', 'Критерий3']
+			 #foreach($issue in $issues)
+			 #if ($issue.getIssueParentkey() == "No parent")
+			 ,['$issue.getIssueKey()', $issue.getIssueContribution3()]
+			 #end
+			 #end
+			]);
+			var options = {
+			 title: '0 уровень',
+			 hAxis: {title: 'Критерий'},
+			 vAxis: {title: 'Задачи'}
+			};
+			var chart = new google.visualization.ColumnChart(document.getElementById('issue_gist_0'));
+			chart.draw(data, options);
+		   }
+		</script>
+		
+		<script src="https://www.google.com/jsapi"></script>
+		<script>
+			google.load("visualization", "1", {packages:["corechart"]});
+			google.setOnLoadCallback(drawChart);
+			function drawChart() {
+			var data = google.visualization.arrayToDataTable([
+			 ['Задача', 'Критерий3']
+			 #foreach($issue in $issues)
+			 #if ($issue.getIssueLevel() == 1)
+			 ,['$issue.getIssueKey()', $issue.getIssueContribution3()]
+			 #end
+			 #end
+			]);
+			var options = {
+			 title: '1 уровень',
+			 hAxis: {title: 'Критерий'},
+			 vAxis: {title: 'Задачи'}
+			};
+			var chart = new google.visualization.ColumnChart(document.getElementById('issue_gist_1'));
+			chart.draw(data, options);
+		   }
+		</script>
+		
+		<script src="https://www.google.com/jsapi"></script>
+		<script>
+			google.load("visualization", "1", {packages:["corechart"]});
+			google.setOnLoadCallback(drawChart);
+			function drawChart() {
+			var data = google.visualization.arrayToDataTable([
+			 ['Задача', 'Критерий3']
+			 #foreach($issue in $issues)
+			 #if ($issue.getIssueLevel() == 2)
+			 ,['$issue.getIssueKey()', $issue.getIssueContribution3()]
+			 #end
+			 #end
+			]);
+			var options = {
+			 title: '2 уровень',
+			 hAxis: {title: 'Критерий'},
+			 vAxis: {title: 'Задачи'}
+			};
+			var chart = new google.visualization.ColumnChart(document.getElementById('issue_gist_2'));
+			chart.draw(data, options);
+		   }
+		</script>
+    </head> 
+
+    <body>
+        
+		Колличество задач: $index <br>
+		Максимальный уровень вложенности подзадачи: $maxlevel <br>
+		Шкала: $scale <br>
+		<h3>Задачи:</h3>
+
+        #foreach($issue in $issues)
+		#if ($issue.getIssueParentkey() == "No parent")
+					<div class="box">
+					<h3><span>$issue.getIssueKey(), $issue.getIssueName(), критерий <b>$issue.getIssueContribution3()</b>(+)</span></h3>
+						<ul>
+							<li>Описание: $issue.getIssueDesc()</li>
+							<li>Процент завершения: $issue.getIssuePercantage_of_completion()%</li>
+							<li>Уровень: $issue.getIssueLevel()</li>
+							<li><h3><span>Подзадачи: (+)</span></h3>
+							<ul>
+								#foreach($issue2 in $issues)
+								#if ($issue2.getIssueParentkey() == $issue.getIssueKey())
+								<li><h3><span>Подзадача $issue2.getIssueKey(), $issue2.getIssueName(), критерий <b>$issue2.getIssueContribution3()</b>(+)</span></h3>
+									<ul>
+										<li>Описание: $issue2.getIssueDesc()</li>
+										##<li>Приоритет: $issue2.getIssuePriority()</li>
+										##<li>Сложность: $issue2.getIssueTime_to_complete()</li>
+										##<li>Срочность: $issue2.getIssueUrgency()</li>
+										<li>Процент завершения: $issue2.getIssuePercantage_of_completion()%</li>
+										##<li>Вклад: $issue2.getIssueWeight(), $issue2.getIssueWeight2(), $issue2.getIssueWeight3()</li>
+										##<li>Значение: $issue2.getIssueValue(), $issue2.getIssueValue3(), $issue2.getIssueValue3()</li>
+										##<li>Родитель: $issue2.getIssueParentkey()</li>
+										<li>Уровень: $issue2.getIssueLevel()</li>
+										##<li>Осталось времемни до завершения задачи(часы): $issue2.getIssueTime_to_end()h.</li>
+										<li><h3><span>Подзадачи: (+)</span></h3>
+										<ul>
+											#foreach($issue3 in $issues)
+											#if ($issue3.getIssueParentkey() == $issue2.getIssueKey())
+											<li><h3><span>Подзадача $issue3.getIssueKey(), $issue3.getIssueName(), критерий <b>$issue3.getIssueContribution3()</b>(+)</span></h3>
+												<ul>
+													<li>Описание: $issue3.getIssueDesc()</li>
+													<li>Процент завершения: $issue3.getIssuePercantage_of_completion()%</li>
+													<li>Уровень: $issue3.getIssueLevel()</li>
+												</ul>
+											</li>
+											#end
+											#end
+										</ul>
+										</li>
+									</ul>
+								</li>
+								#end
+								#end
+							</ul>
+							</li>
+						</ul>
+					</div>
+        #end
+		#end
+
+		<script>
+		jQuery(document).ready(function(){
+		jQuery("ul").hide();
+		jQuery("h3 span").click(function(){
+		jQuery(this).parent().next().slideToggle();
+		});
+		}); 
+		</script>
+
+		<div id="issue_gist_0" style="width: 500px; height: 400px;"></div>
+		<div id="issue_gist_1" style="width: 500px; height: 400px;"></div>
+		<div id="issue_gist_2" style="width: 500px; height: 400px;"></div>
+		
+        ##<form>
+        ##    <input type="text" name="pageName" value="" />any, Done, ToDo, InProgress<br>
+        ##    <input type="submit" value="Submit"/>
+        ##</form>
+		
+    </body>
+</html>
